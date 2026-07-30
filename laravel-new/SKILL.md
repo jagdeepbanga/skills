@@ -38,30 +38,52 @@ JS deps with pnpm. Reach for `--vue` or `--livewire` instead only when the user 
 
 ### 2 — Pull in the packages
 
+The React starter kit already ships `larastan/larastan`, `laravel/sail`, and
+`laravel/pint` as dev dependencies — check `composer.json` before adding anything, and
+don't re-require them. Normally you only need the two spatie packages:
+
 ```bash
 composer require spatie/laravel-data
 composer require spatie/laravel-ray --dev
-composer require larastan/larastan --dev
-composer require laravel/sail --dev
 ```
 
-`laravel-data` gives you typed DTOs; `laravel-ray` is dev-only debugging; `larastan`
-powers the static analysis below; `sail` is the Dockerised dev environment.
+`laravel-data` gives you typed DTOs; `laravel-ray` is dev-only debugging (needs the
+desktop Ray app). `larastan` powers the static analysis below and `sail` is the
+Dockerised dev environment — both come with the kit.
 
 ### 3 — Bring up Sail + Postgres
 
+**Start Docker Desktop first** — `sail up` needs the daemon running (`open -a Docker` on
+macOS, then wait for it to report ready). The first `sail:install` builds a
+multi-gigabyte PHP runtime image, so expect it to run for a few minutes.
+
 ```bash
-php artisan sail:install --with=pgsql --devcontainer   # writes docker-compose.yml + .env
+php artisan sail:install --with=pgsql --devcontainer   # writes compose.yaml + rewrites .env
 ./vendor/bin/sail up -d
-./vendor/bin/sail artisan migrate
+./vendor/bin/sail artisan migrate                       # wait for the pgsql container to be healthy
 ```
 
-From here on, prefix artisan/composer/pnpm with `./vendor/bin/sail` to run them inside
-the containers. An `alias sail='./vendor/bin/sail'` saves a lot of typing.
+Modern Sail writes **`compose.yaml`** (not `docker-compose.yml`) and rewrites `.env` to
+the Sail defaults (`DB_HOST=pgsql`, user `sail`). Give the `pgsql` container a moment to
+report healthy before migrating.
+
+**Fix the URL/port mismatch.** The installer ships `APP_URL=http://localhost:8000` but
+sets no `APP_PORT`, so Sail actually serves on **port 80** — the app is at
+`http://localhost`, and hitting `localhost:8000` gives a "connection refused" that looks
+like a broken build. Align them (a stale `APP_URL` also breaks generated links and Vite
+asset URLs): either set `APP_URL=http://localhost` in `.env` **and** `.env.example`, or
+add `APP_PORT=8000` and `sail up -d` to serve on 8000 to match. Run
+`sail artisan config:clear` after editing.
+
+From here on, prefix artisan/composer/pnpm with
+`./vendor/bin/sail` to run them inside the containers. An `alias sail='./vendor/bin/sail'`
+saves a lot of typing.
 
 ### 4 — Drop in the tooling config
 
-**`pint.json`** (project root):
+**`pint.json`** — the kit ships a bare `{ "preset": "laravel" }`. Extend it, then run
+Pint **once** to apply the new rules across the scaffold. Skip that run and CI's
+`pint --test` fails on every file that predates `declare_strict_types`:
 
 ```json
 {
@@ -74,78 +96,56 @@ the containers. An `alias sail='./vendor/bin/sail'` saves a lot of typing.
 }
 ```
 
-**`phpstan.neon`** (project root):
-
-```neon
-includes:
-    - vendor/larastan/larastan/extension.neon
-
-parameters:
-    paths:
-        - app/
-
-    level: 7
+```bash
+./vendor/bin/sail bin pint        # applies declare(strict_types=1) etc. repo-wide
 ```
 
-A brand-new scaffold won't clear level 7 on the first pass — Larastan is strict about
-relation generics and the like in the default code. Snapshot what's there, then chip
-away at it:
+**`phpstan.neon`** — the kit **already ships a level-7 config** that includes the
+Larastan and Carbon extensions and scans `app/`, `bootstrap/`, `config/`, `database/`,
+and `routes/`. Keep it — don't overwrite it with a narrower `app/`-only version. The
+current scaffold passes level 7 clean, so **no baseline is needed**; just confirm:
 
 ```bash
-./vendor/bin/phpstan analyse --generate-baseline
+./vendor/bin/sail bin phpstan analyse
 ```
 
-### 5 — Wire up CI
+Only reach for `--generate-baseline` if a future starter-kit version regresses and you
+can't fix the findings immediately.
 
-Commit both `pnpm-lock.yaml` and `composer.lock`, then add `.github/workflows/ci.yml`.
-It spins up a Postgres service and runs formatting, analysis, and tests on every push/PR:
+### 5 — pnpm lockfile, native builds & CI
 
-```yaml
-name: CI
-on:
-  push:
-    branches: [main, master]
-  pull_request:
+The installer leaves `node_modules` in place but **doesn't emit `pnpm-lock.yaml`**, and
+pnpm 11 aborts with `ERR_PNPM_IGNORED_BUILDS` on the `unrs-resolver` native build that
+the kit's `.npmrc` (`ignore-scripts=true`) blocks — which breaks both local `pnpm run`
+and CI. Fix both, and pin the pnpm version so CI's `cache: pnpm` is deterministic:
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_DB: laravel
-          POSTGRES_USER: laravel
-          POSTGRES_PASSWORD: secret
-        ports: ["5432:5432"]
-        options: >-
-          --health-cmd="pg_isready -U laravel" --health-interval=5s
-          --health-timeout=5s --health-retries=10
-    env:
-      DB_CONNECTION: pgsql
-      DB_HOST: 127.0.0.1
-      DB_PORT: 5432
-      DB_DATABASE: laravel
-      DB_USERNAME: laravel
-      DB_PASSWORD: secret
-    steps:
-      - uses: actions/checkout@v4
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: "8.4"
-          coverage: none
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: pnpm
-      - run: composer install --no-interaction --prefer-dist --no-progress
-      - run: pnpm install --frozen-lockfile && pnpm build
-      - run: cp .env.example .env && php artisan key:generate && php artisan migrate --force
-      - run: ./vendor/bin/pint --test
-      - run: ./vendor/bin/phpstan analyse --no-progress
-      - run: php artisan test
+```bash
+pnpm install --lockfile-only      # generate the missing pnpm-lock.yaml
 ```
+
+- Add `"packageManager": "pnpm@<version>"` to `package.json`.
+- Acknowledge the skipped build in `pnpm-workspace.yaml` (pnpm 11 keeps build settings
+  here, not in `package.json`; `pnpm approve-builds` writes the same block):
+
+  ```yaml
+  allowBuilds:
+    unrs-resolver: false        # prebuilt bindings ship in the tree; the build is a fallback
+  ```
+
+Run `pnpm install` again to sync, then confirm the JS checks pass:
+`pnpm run types:check && pnpm run lint:check && pnpm run format:check && pnpm build`.
+
+**CI** — the React kit already ships `.github/workflows/tests.yml`, which runs
+`composer setup` then `composer ci:check` (Pint, ESLint, Prettier, PHPStan, tests). Don't
+add a second workflow; patch that file to close two gaps for this stack:
+
+- Add a `postgres:16-alpine` **service** plus job-level `DB_*` env (`DB_HOST=127.0.0.1`
+  with matching creds) — otherwise the pgsql `migrate` inside `composer setup` fails.
+  Laravel loads `.env` immutably, so job-level env vars win over the copied `.env.example`.
+- Add a **`pnpm/action-setup`** step and `cache: pnpm` on `setup-node` — the kit's default
+  workflow never installs pnpm, so `composer setup`'s `pnpm install` would fail on a runner.
+
+Commit both `composer.lock` and `pnpm-lock.yaml`.
 
 ## Writing code here
 
