@@ -20,6 +20,7 @@ Skills are reusable instruction sets that extend Claude Code's behavior. Each sk
 | [`grill-with-docs`](./grill-with-docs/) | A relentless interview to sharpen a plan or design, creating docs (ADRs and glossary) as you go. |
 | [`implement`](./implement/) | Implement a piece of work based on a spec or set of tickets. |
 | [`improve-codebase-architecture`](./improve-codebase-architecture/) | Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill the one you pick. |
+| [`laravel-new`](./laravel-new/) | Preferred tech stack and conventions for new Laravel projects — Laravel 13+, PostgreSQL via Sail, Vite + Tailwind 4 + TypeScript, pnpm, spatie/laravel-data + laravel-ray, Pint + Larastan (level 7), and CI. |
 | [`prototype`](./prototype/) | Build a throwaway prototype to answer a design question. |
 | [`research`](./research/) | Investigate a question against high-trust primary sources and capture the findings as a Markdown file. |
 | [`resolving-merge-conflicts`](./resolving-merge-conflicts/) | Resolve an in-progress git merge/rebase conflict. |
