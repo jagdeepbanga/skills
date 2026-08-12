@@ -17,7 +17,10 @@ Skills are reusable instruction sets that extend Claude Code's behavior. Each sk
 | [`codebase-design`](./codebase-design/) | Shared vocabulary for designing deep modules — interfaces, seams, deepening opportunities, testability. |
 | [`diagnosing-bugs`](./diagnosing-bugs/) | Diagnosis loop for hard bugs and performance regressions. |
 | [`domain-modeling`](./domain-modeling/) | Build and sharpen a project's domain model — ubiquitous language and architectural decisions. |
+| [`grill-me`](./grill-me/) | A relentless interview to sharpen a plan or design. |
 | [`grill-with-docs`](./grill-with-docs/) | A relentless interview to sharpen a plan or design, creating docs (ADRs and glossary) as you go. |
+| [`grilling`](./grilling/) | Grill the user relentlessly about a plan, decision, or idea. |
+| [`handoff`](./handoff/) | Compact the current conversation into a handoff document for another agent to pick up. |
 | [`implement`](./implement/) | Implement a piece of work based on a spec or set of tickets. |
 | [`improve-codebase-architecture`](./improve-codebase-architecture/) | Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill the one you pick. |
 | [`laravel-new`](./laravel-new/) | Preferred tech stack and conventions for new Laravel projects — Laravel 13+, PostgreSQL via Sail, Vite + Tailwind 4 + TypeScript, pnpm, spatie/laravel-data + laravel-ray, Pint + Larastan (level 7), and CI. |
@@ -26,11 +29,17 @@ Skills are reusable instruction sets that extend Claude Code's behavior. Each sk
 | [`resolving-merge-conflicts`](./resolving-merge-conflicts/) | Resolve an in-progress git merge/rebase conflict. |
 | [`setup-matt-pocock-skills`](./setup-matt-pocock-skills/) | Configure this repo for the engineering skills — issue tracker, triage labels, domain doc layout. Run once before first use. |
 | [`tdd`](./tdd/) | Test-driven development — red-green-refactor and integration tests. |
+| [`teach`](./teach/) | Teach the user a new skill or concept, within this workspace. |
+| [`to-questionnaire`](./to-questionnaire/) | Turn a decision you can't fully answer into a questionnaire for someone else to fill in. |
 | [`to-spec`](./to-spec/) | Turn the current conversation into a spec and publish it to the project issue tracker. |
 | [`to-tickets`](./to-tickets/) | Break a plan, spec, or conversation into tracer-bullet tickets with blocking edges, published to the tracker. |
 | [`triage`](./triage/) | Move issues and external PRs through a state machine of triage roles — categorise, verify, grill, and write agent-ready briefs. |
+| [`wait-what`](./wait-what/) | Stop. That last message did not land — re-pitch it. |
 | [`wayfinder`](./wayfinder/) | Plan a huge chunk of work as a shared map of decision tickets, resolved one at a time until the path is clear. |
+| [`wizard`](./wizard/) | Generate an interactive bash wizard for steps only a human can perform — provisioning, credentials, dashboards, migrations. |
 | [`write-a-skill`](./write-a-skill/) | Create new agent skills with proper structure, progressive disclosure, and bundled resources. |
+| [`writing-for-agents`](./writing-for-agents/) | Reference for writing documents agents consume — skills, AGENTS.md, pointed-at docs. |
+| [`writing-great-skills`](./writing-great-skills/) | Reference for writing and editing skills well — the vocabulary and principles that make a skill predictable. |
 
 ## Installing skills
 
