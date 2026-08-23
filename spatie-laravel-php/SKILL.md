@@ -56,6 +56,7 @@ Don't:
 - Use `final` or `readonly` by default.
 - Use `else` when early returns work.
 - Add spaces after Blade control structures.
+- Write down methods in migrations, only up methods.
 
 ## Examples
 ```php

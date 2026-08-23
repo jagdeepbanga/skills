@@ -367,6 +367,9 @@ Validator::extend('organisation_type', function ($attribute, $value) {
 - Resources and Transformers: plural + `Resource` or `Transformer` (`UsersResource`)
 - Enums: descriptive name, no prefix (`OrderStatus`, `BookingType`)
 
+### Migrations
+- Do not write down methods in migrations, only up methods
+
 ### Code Quality Reminders
 - Use typed properties over docblocks
 - Prefer early returns over nested if/else
