@@ -22,6 +22,7 @@ Skills are reusable instruction sets that extend Claude Code's behavior. Each sk
 | [`grilling`](./grilling/) | Grill the user relentlessly about a plan, decision, or idea. |
 | [`handoff`](./handoff/) | Compact the current conversation into a handoff document for another agent to pick up. |
 | [`implement`](./implement/) | Implement a piece of work based on a spec or set of tickets. |
+| [`implement-with-worktree`](./implement-with-worktree/) | Implement one ticket in its own git worktree and branch, so parallel Claude Code sessions cannot corrupt each other, then push and raise a PR. |
 | [`improve-codebase-architecture`](./improve-codebase-architecture/) | Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill the one you pick. |
 | [`laravel-new`](./laravel-new/) | Preferred tech stack and conventions for new Laravel projects — Laravel 13+, PostgreSQL via Sail, Vite + Tailwind 4 + TypeScript, pnpm, spatie/laravel-data + laravel-ray, Pint + Larastan (level 7), and CI. |
 | [`prototype`](./prototype/) | Build a throwaway prototype to answer a design question. |
