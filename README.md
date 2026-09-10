@@ -41,7 +41,6 @@ Skills are reusable instruction sets that extend Claude Code's behavior. Each sk
 | [`wizard`](./wizard/) | Generate an interactive bash wizard for steps only a human can perform — provisioning, credentials, dashboards, migrations. |
 | [`write-a-skill`](./write-a-skill/) | Create new agent skills with proper structure, progressive disclosure, and bundled resources. |
 | [`writing-for-agents`](./writing-for-agents/) | Reference for writing documents agents consume — skills, AGENTS.md, pointed-at docs. |
-| [`writing-great-skills`](./writing-great-skills/) | Reference for writing and editing skills well — the vocabulary and principles that make a skill predictable. |
 
 ## Installing skills
 
