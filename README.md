@@ -16,6 +16,7 @@ Skills are reusable instruction sets that extend Claude Code's behavior. Each sk
 | [`code-review`](./code-review/) | Review changes since a fixed point along two axes — Standards (does it follow this repo's coding standards?) and Spec (does it match what the issue/PRD asked for?), in parallel sub-agents. |
 | [`codebase-design`](./codebase-design/) | Shared vocabulary for designing deep modules — interfaces, seams, deepening opportunities, testability. |
 | [`diagnosing-bugs`](./diagnosing-bugs/) | Diagnosis loop for hard bugs and performance regressions. |
+| [`diagram-design`](./diagram-design/) | Create branded architecture, flowchart, sequence, ER, timeline, chart and 40+ other diagram types as self-contained HTML/SVG/PNG. |
 | [`domain-modeling`](./domain-modeling/) | Build and sharpen a project's domain model — ubiquitous language and architectural decisions. |
 | [`grill-me`](./grill-me/) | A relentless interview to sharpen a plan or design. |
 | [`grill-with-docs`](./grill-with-docs/) | A relentless interview to sharpen a plan or design, creating docs (ADRs and glossary) as you go. |
